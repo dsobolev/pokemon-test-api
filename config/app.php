@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'pokemonapi' => [
+        'url' => env('POKEMON_API_URL'),
+        'pageSize' => env('POKEMON_API_PAGE_SIZE', 50),
+    ],
 ];

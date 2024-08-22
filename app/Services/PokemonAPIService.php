@@ -7,20 +7,23 @@ use Illuminate\Support\Facades\Http;
 
 class PokemonAPIService
 {
+    public function __construct()
+    {
+        $this->baseUrl = config('app.pokemonapi.url');
+        $this->pageSize = config('app.pokemonapi.pageSize');
+    }
+
     public function getAllPaged(int $pageNo): array
     {
-        $baseUrl = 'https://pokeapi.co/api/v2';
-        $perPage = 30;
-
         $endpoint = 'pokemon';
 
         if ($pageNo <= 0) {
             $pageNo = 1;
         }
 
-        $responce = Http::get("${baseUrl}/${endpoint}/", [
-            'limit' => $perPage,
-            'offset' => ($pageNo - 1) * $perPage,
+        $responce = Http::get("{$this->baseUrl}/{$endpoint}/", [
+            'limit' => $this->pageSize,
+            'offset' => ($pageNo - 1) * $this->pageSize,
         ]);
 
         if (!$responce->ok()) {
