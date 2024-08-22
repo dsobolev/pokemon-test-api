@@ -9,12 +9,16 @@ use Illuminate\Support\Str;
 
 class PokemonController
 {
-    public function all(PokemonAPIService $pokemonApi, ?int $page = 1): JsonResponse
+    public function __construct(
+        private PokemonAPIService $pokemonApi
+    ) { }
+
+    public function all(?int $page = 1): JsonResponse
     {
         $res = [];
 
         try {
-            $response = $pokemonApi->getAllPaged($page);
+            $response = $this->pokemonApi->getAllPaged($page);
         } catch (DataNotRetrievedException $e) {
             response->json([
                 'status' => 'fail',
@@ -37,5 +41,12 @@ class PokemonController
         }
 
         return response()->json($res);
+    }
+
+    public function single(string $id): JsonResponse
+    {
+        $response = $this->pokemonApi->getByIdOrName($id);
+
+        return response()->json($response);
     }
 }
