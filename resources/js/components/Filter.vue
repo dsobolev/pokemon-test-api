@@ -16,8 +16,7 @@ const emit = defineEmits({
 const filterValue = defineModel()
 
 function filterEmit() {
-    emit('doFilter', { filter: filterValue.value })
-    console.log('emited', filterValue.value)
+    emit('doFilter', { filter: filterValue.value.trim().toLowerCase() })
 }
 </script>
 

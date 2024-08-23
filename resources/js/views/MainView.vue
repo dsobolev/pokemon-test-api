@@ -1,5 +1,4 @@
 <script setup>
-import axios from "axios"
 import { ref, computed } from "vue"
 import PokemonList from '@components/PokemonList.vue'
 import Filter from '@components/Filter.vue'
@@ -9,13 +8,12 @@ const loading = ref(false)
 const error = ref(false)
 
 const pokemonsData = window.sessionStorage.getItem('pokemons')
-
 if (null !== pokemonsData) {
     pokemons.value = JSON.parse(pokemonsData)
 } else {
     loading.value = true
 
-    axios.get("api/pokemons")
+    axios.get("/api/pokemons")
         .then(response => {
             if (response.data.status === 'fail') {
                 loading.value = false
