@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import PokemonProfile from '@components/PokemonProfile.vue'
+import BackButton from '@components/BackButton.vue'
 
 const route = useRoute()
 // route.params.id
@@ -11,5 +12,19 @@ const profileData = raw.data;
 </script>
 
 <template>
-    <PokemonProfile :profile="profileData" />
+    <div class="single-view">
+        <BackButton class="back-button"/>
+        <PokemonProfile :profile="profileData" />
+    </div>
 </template>
+
+<style scoped>
+.single-view {
+    position: relative;
+}
+
+.back-button {
+    position: absolute;
+    top: -120px;
+}
+</style>
