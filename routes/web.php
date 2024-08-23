@@ -7,8 +7,9 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/api/pokemons/{page?}', [PokemonController::class, "all"]);
-Route::get('/api/pokemons/profile/{id}', [PokemonController::class, "single"])
+/* accept only AJAX calls for these two - custom middleware with isXMLRequest() */
+Route::get('/api/pokemons/', [PokemonController::class, "all"]);
+Route::get('/api/pokemons/{id}', [PokemonController::class, "single"])
     ->where('id', '[A-Za-z0-9]+');
 
 Route::get('/{vue_capture?}', function () {

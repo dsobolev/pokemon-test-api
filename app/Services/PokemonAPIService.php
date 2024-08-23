@@ -12,21 +12,14 @@ class PokemonAPIService
     public function __construct()
     {
         $this->baseUrl = config('app.pokemonapi.url');
-        $this->pageSize = config('app.pokemonapi.pageSize');
     }
 
-    public function getAllPaged(int $pageNo): array
+    public function getAll(): array
     {
         $endpoint = self::POKEMON_ENDPOINT;
 
-        if ($pageNo <= 0) {
-            $pageNo = 1;
-        }
-
-        $responce = Http::get("{$this->baseUrl}/{$endpoint}/", [
-            'limit' => $this->pageSize,
-            'offset' => ($pageNo - 1) * $this->pageSize,
-        ]);
+        // limit here is done to omit default paging
+        $responce = Http::get("{$this->baseUrl}/{$endpoint}/?limit=4000");
 
         if (!$responce->ok()) {
             throw new DataNotRetrievedException('Pokemons info could not be retrieved');
@@ -47,4 +40,25 @@ class PokemonAPIService
 
         return $responce->json();
     }
+
+    /*
+    Cache is not configured. But if so, it could be good to cache responses using URIs as keys.
+    Cached for 24 hours.
+
+    private function getCached($uri) {
+        $result = Cache::remember($uri, 24 * 60 * 60, function () {
+            return Http::get("{$this->baseUrl}/{$uri});
+        });
+
+        return $result;
+    }
+
+    Then all public methods could be like:
+
+    getByIdOrName
+    ...
+    $uri = "$endpoint/$id";
+    $response = getCached($uri);
+    ...
+    */
 }

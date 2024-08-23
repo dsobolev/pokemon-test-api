@@ -14,12 +14,12 @@ class PokemonController
         private PokemonAPIService $pokemonApi
     ) { }
 
-    public function all(?int $page = 1): JsonResponse
+    public function all(): JsonResponse
     {
         $res = [];
 
         try {
-            $response = $this->pokemonApi->getAllPaged($page);
+            $response = $this->pokemonApi->getAll();
         } catch (DataNotRetrievedException $e) {
             return response()->json([
                 'status' => 'fail',
@@ -30,6 +30,11 @@ class PokemonController
         $res['pokemons'] = [];
         $pokemons = $response['results'];
 
+        /*
+        This processing should go to a separate Services/PokemonDataExtractor to hobor Single Responsibility principle.
+
+        $res['pokemons'] = PokemonDataExtractor::extract($pokemons)
+        */
         foreach ($pokemons as $pokemon) {
             $subUrl = rtrim($pokemon['url'], '/');
             $idPos = strrpos($subUrl, '/');
@@ -59,9 +64,10 @@ class PokemonController
 
         /*
         This piece might go to separate Services/ProfileDataExtractor
-        $res['data'] = ProfileDataExtractor::extract($response)
+
+        $res['profile'] = ProfileDataExtractor::extract($response)
         */
-        $res['data'] = [
+        $res['profile'] = [
             'name' => $response['name'],
             'img' => $response['sprites']['other']['official-artwork']['front_default'],
             'height' => $response['height'],
