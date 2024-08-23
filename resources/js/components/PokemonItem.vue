@@ -15,7 +15,9 @@ defineProps({
 
 <style scoped>
 li {
+    display: inline-block;
     margin-bottom: .5em;
+    margin-right: .5em;
     text-align: center;
 }
 

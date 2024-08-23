@@ -1,11 +1,41 @@
 <script setup>
+import axios from "axios"
+import { ref } from "vue"
 import PokemonList from '@components/PokemonList.vue'
 
-const pokemons = {"status":"ok","count":1302,"pokemons": [{"id":31,"name":"nidoqueen"},{"id":32,"name":"nidoran-m"},{"id":33,"name":"nidorino"},{"id":34,"name":"nidoking"},{"id":35,"name":"clefairy"},{"id":36,"name":"clefable"},{"id":37,"name":"vulpix"},{"id":38,"name":"ninetales"},{"id":39,"name":"jigglypuff"},{"id":40,"name":"wigglytuff"},{"id":41,"name":"zubat"},{"id":42,"name":"golbat"},{"id":43,"name":"oddish"},{"id":44,"name":"gloom"},{"id":45,"name":"vileplume"},{"id":46,"name":"paras"},{"id":47,"name":"parasect"},{"id":48,"name":"venonat"},{"id":49,"name":"venomoth"},{"id":50,"name":"diglett"},{"id":51,"name":"dugtrio"},{"id":52,"name":"meowth"},{"id":53,"name":"persian"},{"id":54,"name":"psyduck"},{"id":55,"name":"golduck"},{"id":56,"name":"mankey"},{"id":57,"name":"primeape"},{"id":58,"name":"growlithe"},{"id":59,"name":"arcanine"},{"id":60,"name":"poliwag"}]}
+const pokemons = ref([])
+const loading = ref(false)
+const error = ref(false)
 
+const pokemonsData = window.sessionStorage.getItem('pokemons')
 
+if (null !== pokemonsData) {
+    pokemons.value = JSON.parse(pokemonsData)
+} else {
+    loading.value = true
+
+    axios.get("api/pokemons")
+        .then(response => {
+            if (response.data.status === 'fail') {
+                loading.value = false
+                error.value = true
+            } else {
+                pokemons.value = response.data.pokemons
+                window.sessionStorage.setItem('pokemons', JSON.stringify(response.data.pokemons))
+
+                loading.value = false
+            }
+        })
+        .catch(e => {
+            loading.value = false
+            error.value = true
+        })
+}
 </script>
 
 <template>
-    <PokemonList :pokemons="pokemons.pokemons"/>
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="error">Data can not be fetched</div>
+    <PokemonList v-else
+                 :pokemons="pokemons"/>
 </template>

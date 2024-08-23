@@ -19,7 +19,7 @@ defineProps({
 
 <style scoped>
 ul {
-    columns: 4;
     list-style: none;
+    text-align: center;
 }
 </style>

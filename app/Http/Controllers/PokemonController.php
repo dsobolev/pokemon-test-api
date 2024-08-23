@@ -21,13 +21,13 @@ class PokemonController
         try {
             $response = $this->pokemonApi->getAllPaged($page);
         } catch (DataNotRetrievedException $e) {
-            response->json([
+            return response()->json([
                 'status' => 'fail',
             ]);
         }
 
         $res['status'] = 'ok';
-        $res['count'] = $response['count'];
+        $res['pokemons'] = [];
         $pokemons = $response['results'];
 
         foreach ($pokemons as $pokemon) {
@@ -35,7 +35,7 @@ class PokemonController
             $idPos = strrpos($subUrl, '/');
             $id = (int) substr($subUrl, $idPos + 1);
 
-            $res[] = [
+            $res['pokemons'][] = [
                 'id' => $id,
                 'name' => $pokemon['name'],
             ];
