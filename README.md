@@ -1,63 +1,51 @@
-# ans/pokédex
+# Test Pokemon API
 
-**This project will depend on your ability to fulfil the task 
-requirements. Any potential design skills are a bonus, but usability, 
-performance and security will be taken into account.**
+Front-end for [Pokéapi](https://pokeapi.co/) (one of)
 
+## Techs
+PHP 8.3, Laravel 11, Vue 3, axios
 
-## Introduction
-This project provides a starting point which will allow you to create your own 
-web-based encyclopedia based on the popular franchise Pokémon - also known as 
-a pokédex.
+## Install & Setup
 
+The project was done with the use of [Laravel Sail](https://laravel.com/docs/11.x/sail).
 
-## Project Requirements
+To load Sail for cloned project run:
 
-We would like to have this project completed in Laravel. You are welcome to use Docker.
+```
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \
+    composer update laravel/sail
+```
 
-Please use the latest version of Laravel available: ![Laravel](https://img.shields.io/packagist/v/laravel/framework)
+and then
 
-You can also utilise frontend frameworks like VueJS, React or utility frameworks like TailwindCSS. **Please bear in mind that design and integration of frontend frameworks is a bonus - we are not expecting you to do this**
+```
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
-## Task Requirements
+Pls note that I had to set `SESSION_DRIVER=array` in my `.env` file. Otherwise, since there's no databese in use, Laravel throws an error.
 
-For this challenge, we require a web app in the form of a pokédex, allowing users
-the ability to search for and display information for a specific pokémon.
+To build front-end using `vite`:
 
-A RESTful API is available at [Pokéapi](https://pokeapi.co/) which will 
-provide you with all the data that you will need. You do not need to create 
-an account nor authenticate to consume the API, however, please 
-be aware that this API is rate-limited.
- 
-To get started, please fork of this repository either here on GitHub or via another public repository like GitLab.
+```
+npm install
+npm run dev
+```
 
-We recommend that you spend no more than one hour on this challenge,
-we are more interested in how you approach the task than spending lots of time on it.
+`npm` version used was `10.7.0`
 
-Once the time is up, feel free to use comments/notes/pseudo code on how you would proceed further.
+## Additional notes
 
-### User Stories
+* `Redis` is mentioned as a dependency in `docker-compose.xml` I wanted to utilize it for caching of API responses. Proper notes are left in the code.
 
-| As an <type of user> | I want to <perform some task> | so that I can <achieve some goal> |
-|---|---|---|
-| End User | Search for a specific pokémon  | Improve my knowledge of pokémon abilities for my next Gym battle |
+* There is some repetitive code in Vue components (in `views`) regarding API responses processing (whether there's a loading, or HTTP errors). Those should definitely be done as an error handling components or smth similar.
 
-
-### Acceptance Criteria
-
-| GIVEN | WHEN | THEN |
-|---|---|---|
-| I am on a main pokédex page | The page loads | I can see a full list of available pokémon |
-| ^ | ^ | I can see a search form to enter the name of a Pokemon to filter the full list |
-| ^ | I enter a name AND search | I can see a filtered list of matching results |
-| ^ | I can click an entry in the list | I am redirected to an overview page for the selected pokémon |
-| I am on the pokémon overview page | The page loads | I can see an image, name, species, height/weight and any abilities |
-| ^ | ^ | I can see a link back to the main page |
-
- 
-## Submission
-When you are ready to submit, please ensure you have forked this repository. No merge/pull request is required,
-and provide us with a link to your attempt.
-
-## Copyright
-All trademarks are the property of their respective owners.
+### That's it. Thank you for your time.
