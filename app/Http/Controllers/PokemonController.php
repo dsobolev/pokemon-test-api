@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\DataNotRetrievedException;
 use App\Services\PokemonAPIService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,8 +46,34 @@ class PokemonController
 
     public function single(string $id): JsonResponse
     {
-        $response = $this->pokemonApi->getByIdOrName($id);
+        $res = [];
 
-        return response()->json($response);
+        try {
+            $response = $this->pokemonApi->getByIdOrName($id);
+        } catch (DataNotRetrievedException $e) {
+            response->json([
+                'status' => 'fail',
+            ]);
+        }
+        $res['status'] = 'ok';
+
+        /*
+        This piece might go to separate Services/ProfileDataExtractor
+        $res['data'] = ProfileDataExtractor::extract($response)
+        */
+        $res['data'] = [
+            'name' => $response['name'],
+            'img' => $response['sprites']['other']['official-artwork']['front_default'],
+            'height' => $response['height'],
+            'weight' => $response['weight'],
+            'species' => $response['species']['name'],
+            'abilities' => array_map(
+                fn($ability) => $ability['ability']['name'],
+                $response['abilities']
+            ),
+
+        ];
+
+        return response()->json($res);
     }
 }

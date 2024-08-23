@@ -23,6 +23,10 @@
             input, button, textarea, select {
               font: inherit;
             }
+            ul {
+                margin: 0;
+                padding: 0;
+            }
             /** END CSS reset*/
 
             body {
@@ -37,7 +41,7 @@
             h1 {
                 font-family: cursive;
                 font-size: 96px;
-                margin-top: 1em;
+                margin-top: .5em;
                 text-align: center;
                 color: #ffc908;
                 text-shadow: 3px 3px 1px #3858a6;
