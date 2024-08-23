@@ -15,6 +15,7 @@ export default defineConfig({
         alias: {
             vue: "vue/dist/vue.esm-bundler.js",
            '@components': fileURLToPath(new URL('./resources/js/components', import.meta.url)),
+           '@views': fileURLToPath(new URL('./resources/js/views', import.meta.url)),
         },
     },
 });
