@@ -1,7 +1,8 @@
 <script setup>
 import axios from "axios"
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import PokemonList from '@components/PokemonList.vue'
+import Filter from '@components/Filter.vue'
 
 const pokemons = ref([])
 const loading = ref(false)
@@ -31,11 +32,45 @@ if (null !== pokemonsData) {
             error.value = true
         })
 }
+
+function doFilter(event) {
+    filterValue.value = event.filter
+}
+
+const filterValue = ref('')
+const filteredPokemons = computed(() => {
+    if (filterValue.value === '') {
+
+        return pokemons.value
+    }
+
+    if (/^\d+$/.test(filterValue.value)) {
+        // search by id
+        const searchId = parseInt(filterValue.value)
+
+        return pokemons.value.filter(item => item.id === searchId)
+    } else {
+        // search by name
+        const searchTerm = filterValue.value
+
+        return pokemons.value.filter(item => item.name.startsWith(searchTerm) )
+    }
+})
 </script>
 
 <template>
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">Data can not be fetched</div>
-    <PokemonList v-else
-                 :pokemons="pokemons"/>
+    <div v-else>
+        <Filter @do-filter="doFilter"
+                class="filter" />
+        <PokemonList :pokemons="filteredPokemons"/>
+    </div>
 </template>
+
+<style scoped>
+.filter {
+    margin-bottom: 1em;
+    text-align: center;
+}
+</style>
