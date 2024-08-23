@@ -1,6 +1,10 @@
 <script setup>
 const emit = defineEmits({
     doFilter: ({ filter }) => {
+        if (filter.length === 0) {
+            return false
+        }
+
         if ( /^(\w|\d)+$/.test(filter) ) {
             return true
         } else {

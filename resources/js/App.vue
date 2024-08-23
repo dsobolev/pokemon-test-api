@@ -1,4 +1,4 @@
 <template>
-    <h1>PokEmon</h1>
+    <h1>PoKeMoN</h1>
     <RouterView />
 </template>
