@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\DataNotRetrievedException;
 use App\Services\PokemonAPIService;
+use App\Services\PokemonItemExtractor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ class PokemonController
         private PokemonAPIService $pokemonApi
     ) { }
 
-    public function all(): JsonResponse
+    public function all(PokemonItemExtractor $dataExtractor): JsonResponse
     {
         $res = [];
 
@@ -31,18 +32,16 @@ class PokemonController
         $pokemons = $response['results'];
 
         /*
-        This processing should go to a separate Services/PokemonDataExtractor to hobor Single Responsibility principle.
+        This processing should go to a separate Services/PokemonDataExtractor to honor Single Responsibility principle.
 
         $res['pokemons'] = PokemonDataExtractor::extract($pokemons)
         */
         foreach ($pokemons as $pokemon) {
-            $subUrl = rtrim($pokemon['url'], '/');
-            $idPos = strrpos($subUrl, '/');
-            $id = (int) substr($subUrl, $idPos + 1);
+            $data = $dataExtractor->extract($pokemon);
 
             $res['pokemons'][] = [
-                'id' => $id,
-                'name' => $pokemon['name'],
+                'id' => $data->id,
+                'name' => $data->name,
             ];
         }
 
