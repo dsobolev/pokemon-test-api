@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exceptions\DataNotRetrievedException;
 use App\Services\PokemonAPIService;
 use App\Services\PokemonItemExtractor;
+use App\Services\PokemonProfileExtractor;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,11 +32,6 @@ class PokemonController
         $res['pokemons'] = [];
         $pokemons = $response['results'];
 
-        /*
-        This processing should go to a separate Services/PokemonDataExtractor to honor Single Responsibility principle.
-
-        $res['pokemons'] = PokemonDataExtractor::extract($pokemons)
-        */
         foreach ($pokemons as $pokemon) {
             $data = $dataExtractor->extract($pokemon);
 
@@ -48,7 +44,7 @@ class PokemonController
         return response()->json($res);
     }
 
-    public function single(string $id): JsonResponse
+    public function single(string $id, PokemonProfileExtractor $profileExtractor): JsonResponse
     {
         $res = [];
 
@@ -61,23 +57,8 @@ class PokemonController
         }
         $res['status'] = 'ok';
 
-        /*
-        This piece might go to separate Services/ProfileDataExtractor
-
-        $res['profile'] = ProfileDataExtractor::extract($response)
-        */
-        $res['profile'] = [
-            'name' => $response['name'],
-            'img' => $response['sprites']['other']['official-artwork']['front_default'],
-            'height' => $response['height'],
-            'weight' => $response['weight'],
-            'species' => $response['species']['name'],
-            'abilities' => array_map(
-                fn($ability) => $ability['ability']['name'],
-                $response['abilities']
-            ),
-
-        ];
+        $profile = $profileExtractor->extract($response);
+        $res['profile'] = (array) $profile;
 
         return response()->json($res);
     }
