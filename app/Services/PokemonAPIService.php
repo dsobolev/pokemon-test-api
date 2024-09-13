@@ -18,14 +18,21 @@ class PokemonAPIService
     {
         $endpoint = self::POKEMON_ENDPOINT;
 
-        // limit here is done to omit default paging
-        $responce = Http::get("{$this->baseUrl}/{$endpoint}/?limit=4000");
+        $pokemons = cache($endpoint);
+        if (is_null($pokemons)) {
+            // limit here is done to omit default paging
+            $responce = Http::get("{$this->baseUrl}/{$endpoint}/?limit=4000");
 
-        if (!$responce->ok()) {
-            throw new DataNotRetrievedException('Pokemons info could not be retrieved');
+            if (!$responce->ok()) {
+                throw new DataNotRetrievedException('Pokemons info could not be retrieved');
+            }
+
+            $pokemons = $responce->json();
+
+            cache([$endpoint => $pokemons], 60);
         }
 
-        return $responce->json();
+        return $pokemons;
     }
 
     public function getByIdOrName(string $id): array
