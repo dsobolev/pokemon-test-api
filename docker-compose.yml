@@ -22,7 +22,14 @@ services:
         networks:
             - sail
         depends_on:
+            - db
             - redis
+    db:
+        image: nouchka/sqlite3:latest
+        stdin_open: true
+        tty: true
+        volumes:
+            - 'db:/root/db/'
     redis:
         image: 'redis:alpine'
         ports:
@@ -43,4 +50,6 @@ networks:
         driver: bridge
 volumes:
     sail-redis:
+        driver: local
+    db:
         driver: local
